@@ -19,7 +19,7 @@ var getCommentsNumbers = function () {
   var commentsNumbers = [];
   var commentsCount = getRandomInt(1, 3);
   for (var i = 1; i <= commentsCount; i++) {
-    commentsNumbers.appendChild(COMMENTS_LIST[getRandomInt(0, 6)]);
+    commentsNumbers[i - 1].appendChild(COMMENTS_LIST[getRandomInt(0, 6)]);
   }
   return commentsNumbers;
 };
