@@ -15,11 +15,12 @@ var getRandomInt = function (min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 };
 
+// Генерируем массив комментариев
 var getCommentsNumbers = function () {
   var commentsNumbers = [];
   var commentsCount = getRandomInt(1, 3);
   for (var i = 1; i <= commentsCount; i++) {
-    commentsNumbers[i - 1].appendChild(COMMENTS_LIST[getRandomInt(0, 6)]);
+    commentsNumbers[i - 1] = COMMENTS_LIST[getRandomInt(0, 6)];
   }
   return commentsNumbers;
 };
@@ -69,7 +70,7 @@ hideForm.classList.add('hidden');
 var showGallery = document.querySelector('.gallery-overlay');
 showGallery.classList.remove('hidden');
 
-
+// Наполняем первый элемент данными
 var showGalleryContent = function () {
   showGallery.querySelector('.gallery-overlay-image').setAttribute('src', myKekstagram[0].url);
   showGallery.querySelector('.likes-count').textContent = myKekstagram[0].likes;
