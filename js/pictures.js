@@ -47,11 +47,11 @@ var myKekstagram = generateArray();
 var getFragment = function () {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < 25; i++) {
-    var element = template.cloneNode(true);
     template.setAttribute('tabindex', 0);
-    element.children[0].setAttribute('src', myKekstagram[i].url);
-    element.querySelector('.picture-likes').textContent = myKekstagram[i].likes;
-    element.querySelector('.picture-comments').textContent = myKekstagram[i].comments;
+    template.children[0].setAttribute('src', myKekstagram[i].url);
+    template.querySelector('.picture-likes').textContent = myKekstagram[i].likes;
+    template.querySelector('.picture-comments').textContent = myKekstagram[i].comments;
+    var element = template.cloneNode(true);
     fragment.appendChild(element);
   }
   return fragment;
@@ -68,17 +68,15 @@ var insertFragment = function () {
 insertFragment();
 
 var galleryOverlay = document.querySelector('.gallery-overlay');
-galleryOverlay.classList.remove('hidden');
 
 // Наполняем первый элемент данными
-var showGalleryContent = function () {
-  galleryOverlay.querySelector('.gallery-overlay-image').setAttribute('src', myKekstagram[0].url);
-  galleryOverlay.querySelector('.likes-count').textContent = myKekstagram[0].likes;
-  galleryOverlay.querySelector('.comments-count').textContent = myKekstagram[0].comments;
+var showGalleryContent = function (i) {
+  galleryOverlay.querySelector('.gallery-overlay-image').setAttribute('src', myKekstagram[i].url);
+  galleryOverlay.querySelector('.likes-count').textContent = myKekstagram[i].likes;
+  galleryOverlay.querySelector('.comments-count').textContent = myKekstagram[i].comments;
 };
-showGalleryContent();
 
-var pictureOpen = document.querySelector('.picture');
+var pictureOpen = document.querySelectorAll('.picture');
 var pictureClosed = document.querySelector('.gallery-overlay-close');
 pictureClosed.setAttribute('tabindex', 0);
 
@@ -101,18 +99,20 @@ var hideGallery = function () {
   document.removeEventListener('keydown', onGalleryEscPress);
 };
 
-// Добавляем обработчик клика мыши
-pictureOpen.addEventListener('click', function (evt) {
-  evt.preventDefault();  // НЕ РАБОТАЕТ
-  showGallery();
-});
-
-// Добавляем обработчик клика кнопки
-pictureOpen.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === ENTER_KEYCODE) {
+// Добавляем обработчики клика мыши и кнопки
+for (var i = 0; i < myKekstagram.length - 1; i++) {
+  pictureOpen[i].addEventListener('click', function (evt) {
+    evt.preventDefault();
+    showGalleryContent(i);
     showGallery();
-  }
-});
+  });
+  pictureOpen[i].addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ENTER_KEYCODE) {
+      showGalleryContent(i);
+      showGallery();
+    }
+  });
+}
 
 // Добавляем обработчик клика мыши
 pictureClosed.addEventListener('click', function (evt) {
