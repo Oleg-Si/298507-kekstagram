@@ -1,5 +1,7 @@
 'use strict';
 
+var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
 var COMMENTS_LIST = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
@@ -34,7 +36,7 @@ var generateArray = function () {
       likes: getRandomInt(15, 201),
       comments: getCommentsNumbers().length
     };
-    result[i] = myKekstagramItem;
+    result.push(myKekstagramItem);
   }
   return result;
 };
@@ -45,10 +47,11 @@ var myKekstagram = generateArray();
 var getFragment = function () {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < 25; i++) {
+    template.setAttribute('tabindex', 0);
+    template.children[0].setAttribute('src', myKekstagram[i].url);
+    template.querySelector('.picture-likes').textContent = myKekstagram[i].likes;
+    template.querySelector('.picture-comments').textContent = myKekstagram[i].comments;
     var element = template.cloneNode(true);
-    element.children[0].setAttribute('src', myKekstagram[i].url);
-    element.querySelector('.picture-likes').textContent = myKekstagram[i].likes;
-    element.querySelector('.picture-comments').textContent = myKekstagram[i].comments;
     fragment.appendChild(element);
   }
   return fragment;
@@ -64,17 +67,74 @@ var insertFragment = function () {
 
 insertFragment();
 
-var hideForm = document.querySelector('.upload-overlay');
-hideForm.classList.add('hidden');
+var galleryOverlay = document.querySelector('.gallery-overlay');
 
-var showGallery = document.querySelector('.gallery-overlay');
-showGallery.classList.remove('hidden');
+var pictureOpen = document.querySelectorAll('.picture');
+var pictureClosed = document.querySelector('.gallery-overlay-close');
+pictureClosed.setAttribute('tabindex', 0);
 
-// Наполняем первый элемент данными
-var showGalleryContent = function () {
-  showGallery.querySelector('.gallery-overlay-image').setAttribute('src', myKekstagram[0].url);
-  showGallery.querySelector('.likes-count').textContent = myKekstagram[0].likes;
-  showGallery.querySelector('.comments-count').textContent = myKekstagram[0].comments;
+// Обработчик нажатия кнопки Esc на галерее
+var onGalleryEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    hideGallery();
+  }
 };
 
-showGalleryContent();
+// Показываем галерею
+var showGallery = function (i) {
+  galleryOverlay.classList.remove('hidden');
+  document.addEventListener('keydown', onGalleryEscPress);
+};
+
+// Скрываем галерею
+var hideGallery = function () {
+  galleryOverlay.classList.add('hidden');
+  document.removeEventListener('keydown', onGalleryEscPress);
+};
+
+// Получаем данные для наполнения галереи
+var getGalleryContent = function (evt) {
+  var galleryContent = {
+    url: evt.currentTarget.children[0].getAttribute('src'),
+    likes: evt.currentTarget.querySelector('.picture-likes').textContent,
+    comments: evt.currentTarget.querySelector('.picture-comments').textContent
+  };
+  return galleryContent;
+};
+
+// Наполняем галерею данными
+var showGalleryContent = function (usedContent) {
+  galleryOverlay.querySelector('.gallery-overlay-image').setAttribute('src', usedContent.url);
+  galleryOverlay.querySelector('.likes-count').textContent = usedContent.likes;
+  galleryOverlay.querySelector('.comments-count').textContent = usedContent.comments;
+};
+
+// Добавляем обработчики клика мыши и кнопки
+for (var i = 0; i < 25; i++) {
+  pictureOpen[i].addEventListener('click', function (evt) {
+    evt.preventDefault();
+    var usedContent = getGalleryContent(evt);
+    showGalleryContent(usedContent);
+    showGallery();
+  });
+  pictureOpen[i].addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ENTER_KEYCODE) {
+      evt.preventDefault();
+      var usedContent = getGalleryContent(evt);
+      showGalleryContent(usedContent);
+      showGallery();
+    }
+  });
+}
+
+// Добавляем обработчик клика мыши
+pictureClosed.addEventListener('click', function (evt) {
+  hideGallery();
+});
+
+// Добавляем обработчик клика кнопки
+pictureClosed.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    hideGallery();
+  }
+});
