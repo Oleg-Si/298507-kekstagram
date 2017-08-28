@@ -69,13 +69,6 @@ insertFragment();
 
 var galleryOverlay = document.querySelector('.gallery-overlay');
 
-// Наполняем первый элемент данными
-var showGalleryContent = function (i) {
-  galleryOverlay.querySelector('.gallery-overlay-image').setAttribute('src', myKekstagram[i].url);
-  galleryOverlay.querySelector('.likes-count').textContent = myKekstagram[i].likes;
-  galleryOverlay.querySelector('.comments-count').textContent = myKekstagram[i].comments;
-};
-
 var pictureOpen = document.querySelectorAll('.picture');
 var pictureClosed = document.querySelector('.gallery-overlay-close');
 pictureClosed.setAttribute('tabindex', 0);
@@ -88,7 +81,7 @@ var onGalleryEscPress = function (evt) {
 };
 
 // Показываем галерею
-var showGallery = function () {
+var showGallery = function (i) {
   galleryOverlay.classList.remove('hidden');
   document.addEventListener('keydown', onGalleryEscPress);
 };
@@ -99,16 +92,36 @@ var hideGallery = function () {
   document.removeEventListener('keydown', onGalleryEscPress);
 };
 
+// Получаем данные для наполнения галереи
+var getGalleryContent = function (evt) {
+  var galleryContent = {
+    url: evt.currentTarget.children[0].getAttribute('src'),
+    likes: evt.currentTarget.querySelector('.picture-likes').textContent,
+    comments: evt.currentTarget.querySelector('.picture-comments').textContent
+  };
+  return galleryContent;
+};
+
+// Наполняем галерею данными
+var showGalleryContent = function (usedContent) {
+  galleryOverlay.querySelector('.gallery-overlay-image').setAttribute('src', usedContent.url);
+  galleryOverlay.querySelector('.likes-count').textContent = usedContent.likes;
+  galleryOverlay.querySelector('.comments-count').textContent = usedContent.comments;
+};
+
 // Добавляем обработчики клика мыши и кнопки
-for (var i = 0; i < myKekstagram.length - 1; i++) {
+for (var i = 0; i < 25; i++) {
   pictureOpen[i].addEventListener('click', function (evt) {
     evt.preventDefault();
-    showGalleryContent(i);
+    var usedContent = getGalleryContent(evt);
+    showGalleryContent(usedContent);
     showGallery();
   });
   pictureOpen[i].addEventListener('keydown', function (evt) {
     if (evt.keyCode === ENTER_KEYCODE) {
-      showGalleryContent(i);
+      evt.preventDefault();
+      var usedContent = getGalleryContent(evt);
+      showGalleryContent(usedContent);
       showGallery();
     }
   });
