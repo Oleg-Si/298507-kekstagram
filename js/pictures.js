@@ -184,6 +184,7 @@ var buttonResizeDec = uploadForm.querySelector('.upload-resize-controls-button-d
 var uploadImageScale = uploadForm.querySelector('.effect-image-preview');
 var uploadEffectControls = uploadForm.querySelector('.upload-effect-controls');
 var uploadFormHashtags = uploadForm.querySelector('.upload-form-hashtags');
+var uploadFormSubmit = uploadForm.querySelector('.upload-form-submit');
 
 // Изменяем размер фото
 var changeResizeValue = function (direction) {
@@ -202,7 +203,8 @@ buttonResizeDec.addEventListener('click', function () {
   changeResizeValue(-1);
 });
 
-var currentEffect;
+// Изменяем эффект картинки
+var currentEffect = null;
 var onClickImageEffect = function (target) {
   var effectName = target.value;
   uploadImageScale.classList.remove(currentEffect);
@@ -217,13 +219,24 @@ uploadEffectControls.addEventListener('click', function (evt) {
   }
 });
 
+// Если форма не валидна, подсвечиваем поля
+var checkValid = function (fieldName) {
+  if (!fieldName.validity.valid) {
+    fieldName.style.border = '3px solid red';
+  } else {
+    fieldName.style.border = 'none';
+  }
+};
+
 // Проверяем повторяющиеся теги
-var onCheckForTheSameWord = function (listTags, index) {
-  var lengthListTags = listTags.length;
-  for (var j = 1; j < lengthListTags; j++) {
-    if (listTags[j] === listTags[index] && j !== index) {
-      uploadFormHashtags.setCustomValidity('Теги не должны повторяться');
-      break;
+var checkDoubleHashTags = function (listHashTag) {
+  for (var c = 0; c < listHashTag.length; c++) {
+    var hashTags = listHashTag[c];
+    for (var w = c + 1; w < listHashTag.length; w++) {
+      if (hashTags === listHashTag[w]) {
+        uploadFormHashtags.setCustomValidity('Теги не должны повторяться');
+        break;
+      }
     }
   }
 };
@@ -233,34 +246,48 @@ var onCheckHashTags = function () {
   var maxHashTags = 5;
   var maxLengthTag = 21;
   var tagsFieldValue = uploadFormHashtags.value;
-  var listHashTag = tagsFieldValue.match(/\#[a-zA-Zа-яА-Я0-9\-]+/g);
+  var listHashTag = tagsFieldValue.split(' ');
 
   uploadFormHashtags.setCustomValidity('');
 
-  if (tagsFieldValue.length === 0) {
-    return;
-  }
-
-  if (listHashTag === null) {
-    uploadFormHashtags.setCustomValidity('Первый символ должен быть решеткой');
-  } else {
-    var lengthListHashTags = listHashTag.length;
-    if (lengthListHashTags > maxHashTags) {
+  for (var j = 0; j < listHashTag.length; j++) {
+    if (listHashTag[j].charAt(0) !== '#') {
+      uploadFormHashtags.setCustomValidity('Первый символ должен быть решеткой');
+      break;
+    } else if (listHashTag[j].indexOf('#', 2) > 0) {
+      uploadFormHashtags.setCustomValidity('Хеш-теги должны разделяться пробелом');
+      break;
+    } else if (listHashTag[j].length > maxLengthTag) {
+      uploadFormHashtags.setCustomValidity('Длина тега не должна превышать 20 символов');
+      break;
+    } else if (listHashTag.length > maxHashTags) {
       uploadFormHashtags.setCustomValidity('Нелья добавить более 5 хеш-тегов');
-    }
-
-    for (var l = 0; l < lengthListHashTags; l++) {
-      if (listHashTag[l].length > maxLengthTag) {
-        uploadFormHashtags.setCustomValidity('Длина тега не должна превышать 20 символов');
-        break;
-      }
-      if (lengthListHashTags > 1) {
-        onCheckForTheSameWord(listHashTag, l);
-      }
+      break;
+    } else if (j === listHashTag.length - 1) {
+      checkDoubleHashTags(listHashTag);
     }
   }
 };
 
-uploadFormHashtags.addEventListener('input', function () {
+var onCheckComment = function () {
+  if (uploadFormDescr.validity.tooShort) {
+    uploadFormDescr.setCustomValidity('Текст не может быть менее 30 символов');
+
+    if (uploadFormDescr.validity.tooLong) {
+      uploadFormDescr.setCustomValidity('Текст не может быть более 100 символов');
+    }
+  } else {
+    uploadFormDescr.setCustomValidity('');
+    uploadFormDescr.style.border = 'none';
+  }
+};
+
+uploadFormDescr.addEventListener('input', function () {
+  onCheckComment();
+});
+
+uploadFormSubmit.addEventListener('click', function () {
   onCheckHashTags();
+  checkValid(uploadFormHashtags);
+  checkValid(uploadFormDescr);
 });
