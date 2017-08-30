@@ -33,18 +33,17 @@ var getRandomInt = function (min, max) {
   };
 
   window.data = {
-    // Генерируем массив
-    myKekstagram: function () {
-      var result = [];
+    generateArray: function () {
+      var myKekstagram = [];
       for (var i = 0; i < 25; i++) {
         var myKekstagramItem = {
           url: 'photos/' + (i + 1) + '.jpg',
           likes: getRandomInt(15, 201),
           comments: getCommentsNumbers().length
         };
-        result.push(myKekstagramItem);
+        myKekstagram.push(myKekstagramItem);
       }
-      return result;
+      return myKekstagram;
     }
   };
 
@@ -52,15 +51,14 @@ var getRandomInt = function (min, max) {
 /* -------------------------Модуль data.js конец------------------------------ */
 
 var template = document.querySelector('#picture-template').content.querySelector('.picture');
-
 // Наполняем фрагмент елементами
 var getFragment = function () {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < 25; i++) {
     template.setAttribute('tabindex', 0);
-    template.children[0].setAttribute('src', data.myKekstagram.url);
-    template.querySelector('.picture-likes').textContent = myKekstagram[i].likes;
-    template.querySelector('.picture-comments').textContent = myKekstagram[i].comments;
+    template.children[0].setAttribute('src', window.data.generateArray()[i].url);
+    template.querySelector('.picture-likes').textContent = window.data.generateArray()[i].likes;
+    template.querySelector('.picture-comments').textContent = window.data.generateArray()[i].comments;
     var element = template.cloneNode(true);
     fragment.appendChild(element);
   }
@@ -77,8 +75,6 @@ var insertFragment = function () {
 };
 
 insertFragment();
-
-
 
 var galleryOverlay = document.querySelector('.gallery-overlay');
 
