@@ -244,7 +244,7 @@ var checkDoubleHashTags = function (listHashTag) {
 // Проверяем поле хеш-тегов
 var onCheckHashTags = function () {
   var maxHashTags = 5;
-  var maxLengthTag = 21;
+  var maxLengthTag = 20;
   var tagsFieldValue = uploadFormHashtags.value;
   var listHashTag = tagsFieldValue.split(' ');
 
