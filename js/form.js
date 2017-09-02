@@ -19,8 +19,14 @@
   var uploadEffectControls = uploadForm.querySelector('.upload-effect-controls');
   var uploadFormHashtags = uploadForm.querySelector('.upload-form-hashtags');
   var uploadFormSubmit = uploadForm.querySelector('.upload-form-submit');
+  var uploadEffectLevel = uploadEffectControls.querySelector('.upload-effect-level');
+  var uploadEffectLevelPin = uploadEffectLevel.querySelector('.upload-effect-level-pin');
+  var uploadEffectLevelVal = uploadEffectLevel.querySelector('.upload-effect-level-val');
   var uploadFormDescr = uploadForm.querySelector('.upload-form-description');
   uploadFormDescr.setAttribute('tabindex', 0);
+
+  // Скрываем поле эффектов
+  uploadEffectLevel.classList.add('hidden');
 
   // Обработчик нажатия кнопки Esc на окне загрузки
   var onUploadEscPress = function (evt) {
@@ -78,11 +84,82 @@
     uploadImageScale.classList.add(currentEffect);
   };
 
+  // Показываем эффект и насыщенность эффекта
   uploadEffectControls.addEventListener('click', function (evt) {
     var target = evt.target;
     if (target.tagName.toLowerCase() === 'input') {
       onClickImageEffect(target);
+      var startPinPosition = 20;
+      var startValPosition = 20;
+      uploadEffectLevelPin.style.left = startPinPosition + '%';
+      uploadEffectLevelVal.style.width = startValPosition + '%';
+      // Значение эффектов по умолчанию
+      if (uploadImageScale.classList.contains('effect-marvin')) {
+        uploadImageScale.style.filter = 'invert(20%)';
+      } else if (uploadImageScale.classList.contains('effect-chrome')) {
+        uploadImageScale.style.filter = 'grayscale(0.2)';
+      } else if (uploadImageScale.classList.contains('effect-sepia')) {
+        uploadImageScale.style.filter = 'sepia(0.2)';
+      } else if (uploadImageScale.classList.contains('effect-phobos')) {
+        uploadImageScale.style.filter = 'blur(0.6px)';
+      } else if (uploadImageScale.classList.contains('effect-heat')) {
+        uploadImageScale.style.filter = 'brightness(0.6)';
+      } else {
+        uploadImageScale.style.filter = 'none';
+      }
+      if (target.value !== 'none') {
+        uploadEffectLevel.classList.remove('hidden');
+      } else {
+        uploadEffectLevel.classList.add('hidden');
+      }
     }
+  });
+  // Нажатие мыши
+  uploadEffectLevel.addEventListener('mousedown', function (evt) {
+    evt.preventDefault();
+    var startCoords = evt.clientX;
+    var maxTargetWidth = 455;
+    var minTargetWidth = 0;
+
+    // Движение мыши
+    var onMouseMove = function (moveEvt) {
+      moveEvt.preventDefault();
+      var shift = startCoords - moveEvt.clientX;
+      startCoords = moveEvt.clientX;
+
+      // Ограничиваем поля движения
+      if (uploadEffectLevelPin.offsetLeft - shift <= minTargetWidth) {
+        uploadEffectLevelPin.style.left = minTargetWidth + 'px';
+        uploadEffectLevelVal.style.width = minTargetWidth + 'px';
+      } else if (uploadEffectLevelPin.offsetLeft - shift >= maxTargetWidth) {
+        uploadEffectLevelPin.style.left = maxTargetWidth + 'px';
+        uploadEffectLevelVal.style.width = maxTargetWidth + 'px';
+      } else {
+        uploadEffectLevelPin.style.left = (uploadEffectLevelPin.offsetLeft - shift) + 'px';
+        uploadEffectLevelVal.style.width = (uploadEffectLevelPin.offsetLeft - shift) + 'px';
+        // Рвссчитываем фильтры
+        if (uploadImageScale.classList.contains('effect-marvin')) {
+          uploadImageScale.style.filter = 'invert(' + Math.floor((uploadEffectLevelPin.offsetLeft - shift) * 100 / maxTargetWidth) + '%)';
+        } else if (uploadImageScale.classList.contains('effect-chrome')) {
+          uploadImageScale.style.filter = 'grayscale(' + (uploadEffectLevelPin.offsetLeft - shift) / maxTargetWidth + ')';
+        } else if (uploadImageScale.classList.contains('effect-sepia')) {
+          uploadImageScale.style.filter = 'sepia(' + (uploadEffectLevelPin.offsetLeft - shift) / maxTargetWidth + ')';
+        } else if (uploadImageScale.classList.contains('effect-phobos')) {
+          uploadImageScale.style.filter = 'blur(' + (uploadEffectLevelPin.offsetLeft - shift) * 3 / maxTargetWidth + 'px)';
+        } else if (uploadImageScale.classList.contains('effect-heat')) {
+          uploadImageScale.style.filter = 'brightness(' + (uploadEffectLevelPin.offsetLeft - shift) * 3 / maxTargetWidth + ')';
+        }
+      }
+    };
+
+    var onMouseUp = function (upEvt) {
+      upEvt.preventDefault();
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
   });
 
   // Если форма не валидна, подсвечиваем поля
@@ -135,6 +212,7 @@
     }
   };
 
+  // Проверяем поле комментария
   var onCheckComment = function () {
     if (uploadFormDescr.validity.tooShort) {
       uploadFormDescr.setCustomValidity('Текст не может быть менее 30 символов');
