@@ -6,6 +6,8 @@
   var RESIZE_MAX_VALUE = 100;
   var RESIZE_MIN_VALUE = 25;
   var RISIZE_VALUE_STEP = 25;
+  var MAX_TARGET_WIDTH = 455;
+  var MIN_TARGET_WIDTH = 0;
 
   var uploadForm = document.querySelector('#upload-select-image');
   var uploadFile = uploadForm.querySelector('#upload-file');
@@ -64,10 +66,10 @@
   };
 
   buttonResizeInc.addEventListener('click', function () {
-    changeResizeValue(1, resizeControlsLabel, uploadImageScale, RESIZE_MAX_VALUE, RESIZE_MIN_VALUE, RISIZE_VALUE_STEP);
+    changeResizeValue(1, resizeControlsLabel, uploadImageScale);
   });
   buttonResizeDec.addEventListener('click', function () {
-    changeResizeValue(-1, resizeControlsLabel, uploadImageScale, RESIZE_MAX_VALUE, RESIZE_MIN_VALUE, RISIZE_VALUE_STEP);
+    changeResizeValue(-1, resizeControlsLabel, uploadImageScale);
   });
 
   // Изменяем эффект картинки
@@ -109,8 +111,6 @@
   uploadEffectLevel.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
     var startCoords = evt.clientX;
-    var MAX_TARGET_WIDTH = 455;
-    var MIN_TARGET_WIDTH = 0;
 
     // Движение мыши
     var onMouseMove = function (moveEvt) {
