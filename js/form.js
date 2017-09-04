@@ -61,15 +61,20 @@
   });
 
   // Изменяем размер фото
-  var changeResizeValue = function (direction, button, element) {
-    window.initializeScale(direction, resizeControlsLabel, uploadImageScale, RESIZE_MAX_VALUE, RESIZE_MIN_VALUE, RISIZE_VALUE_STEP);
+  var changeResizeValue = function (direction) {
+    var resizeControlsValue = parseInt(resizeControlsLabel.getAttribute('value'), 10);
+    var newResizeValue = resizeControlsValue + RISIZE_VALUE_STEP * direction;
+    if (newResizeValue >= RESIZE_MIN_VALUE && newResizeValue <= RESIZE_MAX_VALUE) {
+      resizeControlsLabel.setAttribute('value', newResizeValue + '%');
+      window.initializeScale(uploadImageScale, newResizeValue);
+    }
   };
 
   buttonResizeInc.addEventListener('click', function () {
-    changeResizeValue(1, resizeControlsLabel, uploadImageScale);
+    changeResizeValue(1);
   });
   buttonResizeDec.addEventListener('click', function () {
-    changeResizeValue(-1, resizeControlsLabel, uploadImageScale);
+    changeResizeValue(-1);
   });
 
   // Изменяем эффект картинки
