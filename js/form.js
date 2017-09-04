@@ -61,10 +61,10 @@
   };
 
   buttonResizeInc.addEventListener('click', function () {
-    changeResizeValue(1);
+    changeResizeValue(1, resizeControlsLabel, uploadImageScale);
   });
   buttonResizeDec.addEventListener('click', function () {
-    changeResizeValue(-1);
+    changeResizeValue(-1, resizeControlsLabel, uploadImageScale);
   });
 
   // Изменяем эффект картинки
