@@ -3,6 +3,9 @@
 (function () {
   var ESC_KEYCODE = 27;
   var ENTER_KEYCODE = 13;
+  var RESIZE_MAX_VALUE = 100;
+  var RESIZE_MIN_VALUE = 25;
+  var RISIZE_VALUE_STEP = 25;
 
   var uploadForm = document.querySelector('#upload-select-image');
   var uploadFile = uploadForm.querySelector('#upload-file');
@@ -57,19 +60,19 @@
 
   // Изменяем размер фото
   var changeResizeValue = function (direction, button, element) {
-    window.initializeScale.scale(direction, resizeControlsLabel, uploadImageScale);
+    window.initializeScale(direction, resizeControlsLabel, uploadImageScale, RESIZE_MAX_VALUE, RESIZE_MIN_VALUE, RISIZE_VALUE_STEP);
   };
 
   buttonResizeInc.addEventListener('click', function () {
-    changeResizeValue(1, resizeControlsLabel, uploadImageScale);
+    changeResizeValue(1, resizeControlsLabel, uploadImageScale, RESIZE_MAX_VALUE, RESIZE_MIN_VALUE, RISIZE_VALUE_STEP);
   });
   buttonResizeDec.addEventListener('click', function () {
-    changeResizeValue(-1, resizeControlsLabel, uploadImageScale);
+    changeResizeValue(-1, resizeControlsLabel, uploadImageScale, RESIZE_MAX_VALUE, RESIZE_MIN_VALUE, RISIZE_VALUE_STEP);
   });
 
   // Изменяем эффект картинки
   var onClickImageEffect = function (target, element) {
-    window.initializeFilters.initialize(target, uploadImageScale);
+    window.initializeFilters(target, uploadImageScale);
   };
 
   // Показываем эффект и насыщенность эффекта
