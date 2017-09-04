@@ -3,9 +3,6 @@
 (function () {
   var ESC_KEYCODE = 27;
   var ENTER_KEYCODE = 13;
-  var RESIZE_MAX_VALUE = 100;
-  var RESIZE_MIN_VALUE = 25;
-  var RISIZE_VALUE_STEP = 25;
 
   var uploadForm = document.querySelector('#upload-select-image');
   var uploadFile = uploadForm.querySelector('#upload-file');
@@ -59,13 +56,8 @@
   });
 
   // Изменяем размер фото
-  var changeResizeValue = function (direction) {
-    var resizeControlsValue = parseInt(resizeControlsLabel.getAttribute('value'), 10);
-    var newResizeValue = resizeControlsValue + RISIZE_VALUE_STEP * direction;
-    if (newResizeValue >= RESIZE_MIN_VALUE && newResizeValue <= RESIZE_MAX_VALUE) {
-      resizeControlsLabel.setAttribute('value', newResizeValue + '%');
-      uploadImageScale.style.transform = 'scale(' + newResizeValue / 100 + ')';
-    }
+  var changeResizeValue = function (direction, button, element) {
+    window.initializeScale.scale(direction, resizeControlsLabel, uploadImageScale);
   };
 
   buttonResizeInc.addEventListener('click', function () {
@@ -76,7 +68,7 @@
   });
 
   // Изменяем эффект картинки
-  var onClickImageEffect = function (target, uploadImageScale) {
+  var onClickImageEffect = function (target, element) {
     window.initializeFilters.initialize(target, uploadImageScale);
   };
 
