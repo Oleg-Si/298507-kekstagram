@@ -84,7 +84,7 @@
   uploadEffectControls.addEventListener('click', function (evt) {
     var target = evt.target;
     if (target.tagName.toLowerCase() === 'input') {
-      onClickImageEffect(target);
+      onClickImageEffect(target, uploadImageScale);
       var startPinPosition = 20;
       var startValPosition = 20;
       uploadEffectLevelPin.style.left = startPinPosition + '%';
