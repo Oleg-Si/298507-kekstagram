@@ -6,6 +6,8 @@
   var RESIZE_MAX_VALUE = 100;
   var RESIZE_MIN_VALUE = 25;
   var RISIZE_VALUE_STEP = 25;
+  var MAX_TARGET_WIDTH = 455;
+  var MIN_TARGET_WIDTH = 0;
 
   var uploadForm = document.querySelector('#upload-select-image');
   var uploadFile = uploadForm.querySelector('#upload-file');
@@ -64,7 +66,7 @@
     var newResizeValue = resizeControlsValue + RISIZE_VALUE_STEP * direction;
     if (newResizeValue >= RESIZE_MIN_VALUE && newResizeValue <= RESIZE_MAX_VALUE) {
       resizeControlsLabel.setAttribute('value', newResizeValue + '%');
-      uploadImageScale.style.transform = 'scale(' + newResizeValue / 100 + ')';
+      window.initializeScale(uploadImageScale, newResizeValue);
     }
   };
 
@@ -76,19 +78,15 @@
   });
 
   // Изменяем эффект картинки
-  var currentEffect = null;
-  var onClickImageEffect = function (target) {
-    var effectName = target.value;
-    uploadImageScale.classList.remove(currentEffect);
-    currentEffect = 'effect-' + effectName;
-    uploadImageScale.classList.add(currentEffect);
+  var onClickImageEffect = function (target, element) {
+    window.initializeFilters(target, uploadImageScale);
   };
 
   // Показываем эффект и насыщенность эффекта
   uploadEffectControls.addEventListener('click', function (evt) {
     var target = evt.target;
     if (target.tagName.toLowerCase() === 'input') {
-      onClickImageEffect(target);
+      onClickImageEffect(target, uploadImageScale);
       var startPinPosition = 20;
       var startValPosition = 20;
       uploadEffectLevelPin.style.left = startPinPosition + '%';
@@ -118,8 +116,6 @@
   uploadEffectLevel.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
     var startCoords = evt.clientX;
-    var maxTargetWidth = 455;
-    var minTargetWidth = 0;
 
     // Движение мыши
     var onMouseMove = function (moveEvt) {
@@ -128,26 +124,26 @@
       startCoords = moveEvt.clientX;
 
       // Ограничиваем поля движения
-      if (uploadEffectLevelPin.offsetLeft - shift <= minTargetWidth) {
-        uploadEffectLevelPin.style.left = minTargetWidth + 'px';
-        uploadEffectLevelVal.style.width = minTargetWidth + 'px';
-      } else if (uploadEffectLevelPin.offsetLeft - shift >= maxTargetWidth) {
-        uploadEffectLevelPin.style.left = maxTargetWidth + 'px';
-        uploadEffectLevelVal.style.width = maxTargetWidth + 'px';
+      if (uploadEffectLevelPin.offsetLeft - shift <= MIN_TARGET_WIDTH) {
+        uploadEffectLevelPin.style.left = MIN_TARGET_WIDTH + 'px';
+        uploadEffectLevelVal.style.width = MIN_TARGET_WIDTH + 'px';
+      } else if (uploadEffectLevelPin.offsetLeft - shift >= MAX_TARGET_WIDTH) {
+        uploadEffectLevelPin.style.left = MAX_TARGET_WIDTH + 'px';
+        uploadEffectLevelVal.style.width = MAX_TARGET_WIDTH + 'px';
       } else {
         uploadEffectLevelPin.style.left = (uploadEffectLevelPin.offsetLeft - shift) + 'px';
         uploadEffectLevelVal.style.width = (uploadEffectLevelPin.offsetLeft - shift) + 'px';
         // Рвссчитываем фильтры
         if (uploadImageScale.classList.contains('effect-marvin')) {
-          uploadImageScale.style.filter = 'invert(' + Math.floor((uploadEffectLevelPin.offsetLeft - shift) * 100 / maxTargetWidth) + '%)';
+          uploadImageScale.style.filter = 'invert(' + Math.floor((uploadEffectLevelPin.offsetLeft - shift) * 100 / MAX_TARGET_WIDTH) + '%)';
         } else if (uploadImageScale.classList.contains('effect-chrome')) {
-          uploadImageScale.style.filter = 'grayscale(' + (uploadEffectLevelPin.offsetLeft - shift) / maxTargetWidth + ')';
+          uploadImageScale.style.filter = 'grayscale(' + (uploadEffectLevelPin.offsetLeft - shift) / MAX_TARGET_WIDTH + ')';
         } else if (uploadImageScale.classList.contains('effect-sepia')) {
-          uploadImageScale.style.filter = 'sepia(' + (uploadEffectLevelPin.offsetLeft - shift) / maxTargetWidth + ')';
+          uploadImageScale.style.filter = 'sepia(' + (uploadEffectLevelPin.offsetLeft - shift) / MAX_TARGET_WIDTH + ')';
         } else if (uploadImageScale.classList.contains('effect-phobos')) {
-          uploadImageScale.style.filter = 'blur(' + (uploadEffectLevelPin.offsetLeft - shift) * 3 / maxTargetWidth + 'px)';
+          uploadImageScale.style.filter = 'blur(' + (uploadEffectLevelPin.offsetLeft - shift) * 3 / MAX_TARGET_WIDTH + 'px)';
         } else if (uploadImageScale.classList.contains('effect-heat')) {
-          uploadImageScale.style.filter = 'brightness(' + (uploadEffectLevelPin.offsetLeft - shift) * 3 / maxTargetWidth + ')';
+          uploadImageScale.style.filter = 'brightness(' + (uploadEffectLevelPin.offsetLeft - shift) * 3 / MAX_TARGET_WIDTH + ')';
         }
       }
     };
