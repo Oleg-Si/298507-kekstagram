@@ -4,8 +4,6 @@
   var ESC_KEYCODE = 27;
   var ENTER_KEYCODE = 13;
 
-  window.picture.insertFragment();
-
   var galleryOverlay = document.querySelector('.gallery-overlay');
   var pictureOpen = document.querySelectorAll('.picture');
   var pictureClosed = galleryOverlay.querySelector('.gallery-overlay-close');
