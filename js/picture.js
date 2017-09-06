@@ -55,7 +55,7 @@
   var resetForm = function () {
     uploadFormHashtags.value = '';
     uploadFormDescr.value = '';
-    resizeControlsLabel.value = '100%';
+    resizeControlsLabel.setAttribute('value', '100%');
     uploadImageScale.className = 'effect-image-preview';
     uploadImageScale.style.filter = 'none';
     uploadImageScale.style.transform = 'scale(1)';
