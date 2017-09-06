@@ -66,7 +66,6 @@
       var startValPosition = 20;
       uploadEffectLevelPin.style.left = startPinPosition + '%';
       uploadEffectLevelVal.style.width = startValPosition + '%';
-      debugger;
       uploadEffectNone.setAttribute('checked', '');
     }, onError);
   });
