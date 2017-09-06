@@ -7,12 +7,11 @@
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
-
     xhr.addEventListener('load', function () {
       if (xhr.status === 200) {
         onLoad(xhr.response);
       } else {
-        onError(xhr.response);
+        onError('Ошибка, код: ' + xhr.status);
       }
     });
     xhr.addEventListener('error', function () {
@@ -38,7 +37,7 @@
       var xhr = setup(onLoad, onError);
 
       xhr.open('POST', SERVER_URL);
-      xhr.send();
+      xhr.send(data);
     }
   };
 })();

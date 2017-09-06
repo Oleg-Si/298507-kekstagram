@@ -20,12 +20,21 @@
       fragment.appendChild(renderPicture(picturesData[i]));
     }
     pictures.appendChild(fragment);
+
+    window.gallery.addListener();
   };
 
   var uploadForm = document.querySelector('#upload-select-image');
   var uploadOverlay = uploadForm.querySelector('.upload-overlay');
   var uploadImage = uploadForm.querySelector('.upload-image');
-  var uploadFormSubmit = uploadForm.querySelector('.upload-form-submit');
+  var uploadFormHashtags = uploadForm.querySelector('.upload-form-hashtags');
+  var uploadFormDescr = uploadForm.querySelector('.upload-form-description');
+  var resizeControlsLabel = uploadForm.querySelector('.upload-resize-controls-value');
+  var uploadImageScale = uploadForm.querySelector('.effect-image-preview');
+  var uploadEffectLevel = uploadForm.querySelector('.upload-effect-level');
+  var uploadEffectLevelPin = uploadEffectLevel.querySelector('.upload-effect-level-pin');
+  var uploadEffectLevelVal = uploadEffectLevel.querySelector('.upload-effect-level-val');
+  var uploadEffectNone = uploadOverlay.querySelector('#upload-effect-none');
 
   var onError = function (message) {
     var nodeError = document.createElement('div');
@@ -39,14 +48,26 @@
 
     nodeError.textContent = message;
     document.body.insertAdjacentElement('afterbegin', nodeError);
-    uploadOverlay.classList.add('hidden');
-    uploadImage.classList.remove('hidden');
   };
 
   window.backend.load(onSuccess, onError);
 
   uploadForm.addEventListener('submit', function (evt) {
     evt.preventDefault();
-    window.backend.save(new FormData(uploadFormSubmit), onError);
+    window.backend.save(new FormData(uploadForm), function () {
+      uploadOverlay.classList.add('hidden');
+      uploadImage.classList.remove('hidden');
+      uploadFormHashtags.value = '';
+      uploadFormDescr.value = '';
+      resizeControlsLabel.value = '100%';
+      uploadImageScale.style.filter = 'none';
+      uploadImageScale.style.transform = 'scale(1)';
+      var startPinPosition = 20;
+      var startValPosition = 20;
+      uploadEffectLevelPin.style.left = startPinPosition + '%';
+      uploadEffectLevelVal.style.width = startValPosition + '%';
+      debugger;
+      uploadEffectNone.setAttribute('checked', '');
+    }, onError);
   });
 })();

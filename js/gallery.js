@@ -5,7 +5,6 @@
   var ENTER_KEYCODE = 13;
 
   var galleryOverlay = document.querySelector('.gallery-overlay');
-  var pictureOpen = document.querySelectorAll('.picture');
   var pictureClosed = galleryOverlay.querySelector('.gallery-overlay-close');
   pictureClosed.setAttribute('tabindex', 0);
 
@@ -38,21 +37,26 @@
     }
   });
 
-  // Добавляем обработчики клика мыши и кнопки
-  for (var i = 0; i < 25; i++) {
-    pictureOpen[i].addEventListener('click', function (evt) {
-      evt.preventDefault();
-      var usedContent = window.preview.getGalleryContent(evt);
-      window.preview.showGalleryContent(usedContent);
-      showGallery();
-    });
-    pictureOpen[i].addEventListener('keydown', function (evt) {
-      if (evt.keyCode === ENTER_KEYCODE) {
-        evt.preventDefault();
-        var usedContent = window.preview.getGalleryContent(evt);
-        window.preview.showGalleryContent(usedContent);
-        showGallery();
+  window.gallery = {
+    // Добавляем обработчики клика мыши и кнопки
+    addListener: function () {
+      var pictureOpen = document.querySelectorAll('.picture');
+      for (var i = 0; i < 25; i++) {
+        pictureOpen[i].addEventListener('click', function (evt) {
+          evt.preventDefault();
+          var usedContent = window.preview.getGalleryContent(evt);
+          window.preview.showGalleryContent(usedContent);
+          showGallery();
+        });
+        pictureOpen[i].addEventListener('keydown', function (evt) {
+          if (evt.keyCode === ENTER_KEYCODE) {
+            evt.preventDefault();
+            var usedContent = window.preview.getGalleryContent(evt);
+            window.preview.showGalleryContent(usedContent);
+            showGallery();
+          }
+        });
       }
-    });
-  }
+    }
+  };
 })();
