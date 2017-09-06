@@ -74,7 +74,6 @@
     changeResizeValue(1);
   });
   buttonResizeDec.addEventListener('click', function () {
-    debugger;
     changeResizeValue(-1);
   });
 
