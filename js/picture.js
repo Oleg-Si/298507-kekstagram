@@ -52,21 +52,27 @@
 
   window.backend.load(onSuccess, onError);
 
+  var resetForm = function () {
+    uploadFormHashtags.value = '';
+    uploadFormDescr.value = '';
+    resizeControlsLabel.value = '100%';
+    uploadImageScale.className = 'effect-image-preview';
+    uploadImageScale.style.filter = 'none';
+    uploadImageScale.style.transform = 'scale(1)';
+    var startPinPosition = 20;
+    var startValPosition = 20;
+    uploadEffectLevelPin.style.left = startPinPosition + '%';
+    uploadEffectLevelVal.style.width = startValPosition + '%';
+    uploadEffectNone.checked = true;
+    uploadEffectLevel.classList.add('hidden');
+  };
+
   uploadForm.addEventListener('submit', function (evt) {
     evt.preventDefault();
     window.backend.save(new FormData(uploadForm), function () {
       uploadOverlay.classList.add('hidden');
       uploadImage.classList.remove('hidden');
-      uploadFormHashtags.value = '';
-      uploadFormDescr.value = '';
-      resizeControlsLabel.value = '100%';
-      uploadImageScale.style.filter = 'none';
-      uploadImageScale.style.transform = 'scale(1)';
-      var startPinPosition = 20;
-      var startValPosition = 20;
-      uploadEffectLevelPin.style.left = startPinPosition + '%';
-      uploadEffectLevelVal.style.width = startValPosition + '%';
-      uploadEffectNone.setAttribute('checked', '');
+      resetForm();
     }, onError);
   });
 })();
