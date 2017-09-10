@@ -1,28 +1,60 @@
 'use strict';
 
 (function () {
-  var renderPicture = function (picturesData) {
-    var template = document.querySelector('#picture-template').content.querySelector('.picture');
-
-    template.setAttribute('tabindex', 0);
-    template.children[0].setAttribute('src', picturesData.url);
-    template.querySelector('.picture-likes').textContent = picturesData.likes;
-    template.querySelector('.picture-comments').textContent = picturesData.comments.length;
-    var element = template.cloneNode(true);
-
-    return element;
-  };
+  var allData = [];
 
   var onSuccess = function (picturesData) {
-    var fragment = document.createDocumentFragment();
-    var pictures = document.querySelector('.pictures');
-    for (var i = 0; i < 25; i++) {
-      fragment.appendChild(renderPicture(picturesData[i]));
-    }
-    pictures.appendChild(fragment);
-
+    allData = picturesData;
+    window.render.addData(allData);
     window.gallery.addListener();
   };
+
+  var onClickPopular = function () {
+    window.render.clearData();
+    window.render.addData(allData.slice().sort(function (first, second) {
+      if (first.likes < second.likes) {
+        return 1;
+      } else if (first.likes > second.likes) {
+        return -1;
+      } else {
+        return 0;
+      }
+    }));
+  };
+
+  var onClickRecommend = function () {
+    window.render.clearData();
+    window.render.addData(allData);
+  };
+
+  var onClickDiscuss = function () {
+    window.render.clearData();
+    window.render.addData(allData.slice().sort(function (first, second) {
+      if (first.comments.length < second.comments.length) {
+        return 1;
+      } else if (first.comments.length > second.comments.length) {
+        return -1;
+      } else {
+        return 0;
+      }
+    }));
+  };
+
+  var onClickRandom = function () {
+    window.render.clearData();
+    window.render.randomData(allData);
+  };
+
+  var filters = document.querySelector('.filters');
+  var filterPopular = filters.querySelector('#filter-popular');
+  var filterRecommend = filters.querySelector('#filter-recommend');
+  var filterDiscuss = filters.querySelector('#filter-discussed');
+  var filterRandom = filters.querySelector('#filter-random');
+
+  filterPopular.addEventListener('click', onClickPopular);
+  filterRecommend.addEventListener('click', onClickRecommend);
+  filterDiscuss.addEventListener('click', onClickDiscuss);
+  filterRandom.addEventListener('click', onClickRandom);
 
   var uploadForm = document.querySelector('#upload-select-image');
   var uploadOverlay = uploadForm.querySelector('.upload-overlay');
