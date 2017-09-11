@@ -41,7 +41,7 @@
     // Добавляем обработчики клика мыши и кнопки
     addListener: function () {
       var pictureOpen = document.querySelectorAll('.picture');
-      for (var i = 0; i < 25; i++) {
+      for (var i = 0; i < pictureOpen.length; i++) {
         pictureOpen[i].addEventListener('click', function (evt) {
           evt.preventDefault();
           var usedContent = window.preview.getGalleryContent(evt);

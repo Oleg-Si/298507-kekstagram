@@ -13,6 +13,7 @@
       };
       return galleryContent;
     },
+
     // Наполняем галерею данными
     showGalleryContent: function (usedContent) {
       galleryOverlay.querySelector('.gallery-overlay-image').setAttribute('src', usedContent.url);

@@ -13,7 +13,7 @@
   var uploadFile = uploadForm.querySelector('#upload-file');
   var uploadOverlay = uploadForm.querySelector('.upload-overlay');
   var uploadImage = uploadForm.querySelector('.upload-image');
-  var uploadFin = uploadForm.querySelector('.upload-form-cancel');
+  var uploadCancel = uploadForm.querySelector('.upload-form-cancel');
   var resizeControlsLabel = uploadForm.querySelector('.upload-resize-controls-value');
   var buttonResizeInc = uploadForm.querySelector('.upload-resize-controls-button-inc');
   var buttonResizeDec = uploadForm.querySelector('.upload-resize-controls-button-dec');
@@ -34,7 +34,7 @@
   var onUploadEscPress = function (evt) {
     if (evt.keyCode === ESC_KEYCODE) {
       if (document.activeElement !== uploadFormDescr) {
-        onClickUploadFin();
+        onClickUploadCancel();
       }
     }
   };
@@ -45,7 +45,7 @@
     document.addEventListener('keydown', onUploadEscPress);
   };
 
-  var onClickUploadFin = function () {
+  var onClickUploadCancel = function () {
     uploadOverlay.classList.add('hidden');
     window.picture();
     uploadImage.classList.remove('hidden');
@@ -54,28 +54,28 @@
 
   uploadFile.addEventListener('change', onChangeUploadForm);
 
-  uploadFin.addEventListener('click', onClickUploadFin);
-  uploadFin.addEventListener('keydown', function (evt) {
+  uploadCancel.addEventListener('click', onClickUploadCancel);
+  uploadCancel.addEventListener('keydown', function (evt) {
     if (evt.keyCode === ENTER_KEYCODE) {
-      onClickUploadFin();
+      onClickUploadCancel();
     }
   });
 
   // Изменяем размер фото
-  var changeResizeValue = function (direction) {
+  var changeSizePhoto = function (direction) {
     var resizeControlsValue = parseInt(resizeControlsLabel.getAttribute('value'), 10);
-    var newResizeValue = resizeControlsValue + RISIZE_VALUE_STEP * direction;
-    if (newResizeValue >= RESIZE_MIN_VALUE && newResizeValue <= RESIZE_MAX_VALUE) {
-      resizeControlsLabel.setAttribute('value', newResizeValue + '%');
-      window.initializeScale(uploadImageScale, newResizeValue);
+    var newSizeValue = resizeControlsValue + RISIZE_VALUE_STEP * direction;
+    if (newSizeValue >= RESIZE_MIN_VALUE && newSizeValue <= RESIZE_MAX_VALUE) {
+      resizeControlsLabel.setAttribute('value', newSizeValue + '%');
+      window.initializeScale(uploadImageScale, newSizeValue);
     }
   };
 
   buttonResizeInc.addEventListener('click', function () {
-    changeResizeValue(1);
+    changeSizePhoto(1);
   });
   buttonResizeDec.addEventListener('click', function () {
-    changeResizeValue(-1);
+    changeSizePhoto(-1);
   });
 
   // Изменяем эффект картинки
@@ -113,6 +113,7 @@
       }
     }
   });
+
   // Нажатие мыши
   uploadEffectLevel.addEventListener('mousedown', function (evt) {
     evt.preventDefault();

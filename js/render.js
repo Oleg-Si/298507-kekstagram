@@ -21,7 +21,6 @@
     return Math.floor(Math.random() * (max - min)) + min;
   };
 
-
   window.render = {
     addData: function (data) {
       for (var i = 0; i < 25; i++) {
@@ -33,7 +32,7 @@
     },
     clearData: function () {
       var pictureOpen = document.querySelectorAll('.picture');
-      for (var i = 0; i < 25; i++) {
+      for (var i = 0; i < pictureOpen.length; i++) {
         pictures.removeChild(pictureOpen[i]);
       }
     },
