@@ -47,6 +47,7 @@
 
   var onClickUploadFin = function () {
     uploadOverlay.classList.add('hidden');
+    window.picture();
     uploadImage.classList.remove('hidden');
     document.removeEventListener('keydown', onUploadEscPress);
   };

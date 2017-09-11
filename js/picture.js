@@ -9,6 +9,7 @@
     window.gallery.addListener();
   };
 
+  // Сортировка популярные
   var onClickPopular = function () {
     window.render.clearData();
     window.render.addData(allData.slice().sort(function (first, second) {
@@ -20,13 +21,17 @@
         return 0;
       }
     }));
+    window.gallery.addListener();
   };
 
+  // Сортировка рекоммендуемые
   var onClickRecommend = function () {
     window.render.clearData();
     window.render.addData(allData);
+    window.gallery.addListener();
   };
 
+  // Сортировка обсуждаемые
   var onClickDiscuss = function () {
     window.render.clearData();
     window.render.addData(allData.slice().sort(function (first, second) {
@@ -38,11 +43,14 @@
         return 0;
       }
     }));
+    window.gallery.addListener();
   };
 
+  // Сортировка случайные
   var onClickRandom = function () {
     window.render.clearData();
-    window.render.randomData(allData);
+    window.render.randomData(allData.slice());
+    window.gallery.addListener();
   };
 
   var filters = document.querySelector('.filters');
@@ -51,10 +59,18 @@
   var filterDiscuss = filters.querySelector('#filter-discussed');
   var filterRandom = filters.querySelector('#filter-random');
 
-  filterPopular.addEventListener('click', onClickPopular);
-  filterRecommend.addEventListener('click', onClickRecommend);
-  filterDiscuss.addEventListener('click', onClickDiscuss);
-  filterRandom.addEventListener('click', onClickRandom);
+  filterPopular.addEventListener('click', function () {
+    window.debounce(onClickPopular);
+  });
+  filterRecommend.addEventListener('click', function () {
+    window.debounce(onClickRecommend);
+  });
+  filterDiscuss.addEventListener('click', function () {
+    window.debounce(onClickDiscuss);
+  });
+  filterRandom.addEventListener('click', function () {
+    window.debounce(onClickRandom);
+  });
 
   var uploadForm = document.querySelector('#upload-select-image');
   var uploadOverlay = uploadForm.querySelector('.upload-overlay');
@@ -68,6 +84,7 @@
   var uploadEffectLevelVal = uploadEffectLevel.querySelector('.upload-effect-level-val');
   var uploadEffectNone = uploadOverlay.querySelector('#upload-effect-none');
 
+  // Блок ошибки
   var onError = function (message) {
     var nodeError = document.createElement('div');
     nodeError.style = 'z-index: 100';
@@ -84,7 +101,17 @@
 
   window.backend.load(onSuccess, onError);
 
-  var resetForm = function () {
+  uploadForm.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    window.backend.save(new FormData(uploadForm), function () {
+      uploadOverlay.classList.add('hidden');
+      uploadImage.classList.remove('hidden');
+      window.picture();
+    }, onError);
+  });
+
+  // Сбрасываем данные формы
+  window.picture = function () {
     uploadFormHashtags.value = '';
     uploadFormDescr.value = '';
     resizeControlsLabel.setAttribute('value', '100%');
@@ -98,13 +125,4 @@
     uploadEffectNone.checked = true;
     uploadEffectLevel.classList.add('hidden');
   };
-
-  uploadForm.addEventListener('submit', function (evt) {
-    evt.preventDefault();
-    window.backend.save(new FormData(uploadForm), function () {
-      uploadOverlay.classList.add('hidden');
-      uploadImage.classList.remove('hidden');
-      resetForm();
-    }, onError);
-  });
 })();

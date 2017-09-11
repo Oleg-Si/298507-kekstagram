@@ -21,13 +21,6 @@
     return Math.floor(Math.random() * (max - min)) + min;
   };
 
-  var getValue = function (arr) {
-    var ind = getRandomInt(1, 25);
-    if (arr.indexOf(ind) >= 0) {
-      getValue(arr);
-    }
-    return ind;
-  };
 
   window.render = {
     addData: function (data) {
@@ -45,11 +38,10 @@
       }
     },
     randomData: function (data) {
-      var arr = [];
-      for (var i = 0; i < 25; i++) {
-        var totalValue = getValue(arr);
-        arr.push(totalValue);
-        fragment.appendChild(renderPicture(data[totalValue]));
+      for (var i = data.length - 1; i > 0; i--) {
+        var ind = getRandomInt(0, i);
+        var element = data.splice(ind, 1);
+        fragment.appendChild(renderPicture(element[0]));
       }
       pictures.appendChild(fragment);
     }
