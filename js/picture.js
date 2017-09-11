@@ -1,6 +1,9 @@
 'use strict';
 
 (function () {
+  var START_PIN_POSITION = 20;
+  var START_VAL_POSITION = 20;
+
   var data = [];
 
   var onSuccess = function (downloadData) {
@@ -117,10 +120,8 @@
     uploadImageScale.className = 'effect-image-preview';
     uploadImageScale.style.filter = 'none';
     uploadImageScale.style.transform = 'scale(1)';
-    var startPinPosition = 20;
-    var startValPosition = 20;
-    uploadEffectLevelPin.style.left = startPinPosition + '%';
-    uploadEffectLevelVal.style.width = startValPosition + '%';
+    uploadEffectLevelPin.style.left = START_PIN_POSITION + '%';
+    uploadEffectLevelVal.style.width = START_VAL_POSITION + '%';
     uploadEffectNone.checked = true;
     uploadEffectLevel.classList.add('hidden');
   };

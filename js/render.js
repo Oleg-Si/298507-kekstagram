@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var ARRAY_LENGTH = 25;
+
   var fragment = document.createDocumentFragment();
   var filters = document.querySelector('.filters');
   var pictures = document.querySelector('.pictures');
@@ -23,7 +25,7 @@
 
   window.render = {
     addData: function (data) {
-      for (var i = 0; i < 25; i++) {
+      for (var i = 0; i < ARRAY_LENGTH; i++) {
         fragment.appendChild(renderPicture(data[i]));
       }
       pictures.appendChild(fragment);

@@ -8,6 +8,10 @@
   var RISIZE_VALUE_STEP = 25;
   var MAX_TARGET_WIDTH = 455;
   var MIN_TARGET_WIDTH = 0;
+  var MAX_HASHTAGS = 5;
+  var MAX_LENGTH_HASHTAGS = 20;
+  var START_PIN_POSITION = 20;
+  var START_VAL_POSITION = 20;
 
   var uploadForm = document.querySelector('#upload-select-image');
   var uploadFile = uploadForm.querySelector('#upload-file');
@@ -31,10 +35,10 @@
   uploadEffectLevel.classList.add('hidden');
 
   // Обработчик нажатия кнопки Esc на окне загрузки
-  var onUploadEscPress = function (evt) {
+  var onEscPressUploadForm = function (evt) {
     if (evt.keyCode === ESC_KEYCODE) {
       if (document.activeElement !== uploadFormDescr) {
-        onClickUploadCancel();
+        onKeydownUploadCancel();
       }
     }
   };
@@ -42,14 +46,21 @@
   var onChangeUploadForm = function () {
     uploadOverlay.classList.remove('hidden');
     uploadImage.classList.add('hidden');
-    document.addEventListener('keydown', onUploadEscPress);
+    document.addEventListener('keydown', onEscPressUploadForm);
   };
 
   var onClickUploadCancel = function () {
     uploadOverlay.classList.add('hidden');
     window.picture();
     uploadImage.classList.remove('hidden');
-    document.removeEventListener('keydown', onUploadEscPress);
+    document.removeEventListener('keydown', onEscPressUploadForm);
+  };
+
+  var onKeydownUploadCancel = function () {
+    uploadOverlay.classList.add('hidden');
+    window.picture();
+    uploadImage.classList.remove('hidden');
+    document.removeEventListener('keydown', onEscPressUploadForm);
   };
 
   uploadFile.addEventListener('change', onChangeUploadForm);
@@ -57,12 +68,12 @@
   uploadCancel.addEventListener('click', onClickUploadCancel);
   uploadCancel.addEventListener('keydown', function (evt) {
     if (evt.keyCode === ENTER_KEYCODE) {
-      onClickUploadCancel();
+      onKeydownUploadCancel();
     }
   });
 
   // Изменяем размер фото
-  var changeSizePhoto = function (direction) {
+  var onClickbuttonResize = function (direction) {
     var resizeControlsValue = parseInt(resizeControlsLabel.getAttribute('value'), 10);
     var newSizeValue = resizeControlsValue + RISIZE_VALUE_STEP * direction;
     if (newSizeValue >= RESIZE_MIN_VALUE && newSizeValue <= RESIZE_MAX_VALUE) {
@@ -72,10 +83,10 @@
   };
 
   buttonResizeInc.addEventListener('click', function () {
-    changeSizePhoto(1);
+    onClickbuttonResize(1);
   });
   buttonResizeDec.addEventListener('click', function () {
-    changeSizePhoto(-1);
+    onClickbuttonResize(-1);
   });
 
   // Изменяем эффект картинки
@@ -88,10 +99,8 @@
     var target = evt.target;
     if (target.tagName.toLowerCase() === 'input') {
       onClickImageEffect(target, uploadImageScale);
-      var startPinPosition = 20;
-      var startValPosition = 20;
-      uploadEffectLevelPin.style.left = startPinPosition + '%';
-      uploadEffectLevelVal.style.width = startValPosition + '%';
+      uploadEffectLevelPin.style.left = START_PIN_POSITION + '%';
+      uploadEffectLevelVal.style.width = START_VAL_POSITION + '%';
       // Значение эффектов по умолчанию
       if (uploadImageScale.classList.contains('effect-marvin')) {
         uploadImageScale.style.filter = 'invert(20%)';
@@ -161,7 +170,7 @@
   });
 
   // Если форма не валидна, подсвечиваем поля
-  var checkValid = function (fieldName) {
+  var onCheckValid = function (fieldName) {
     if (!fieldName.validity.valid) {
       fieldName.style.border = '3px solid red';
     } else {
@@ -171,10 +180,10 @@
 
   // Проверяем повторяющиеся теги
   var checkDoubleHashTags = function (listHashTag) {
-    for (var c = 0; c < listHashTag.length; c++) {
-      var hashTags = listHashTag[c];
-      for (var w = c + 1; w < listHashTag.length; w++) {
-        if (hashTags === listHashTag[w]) {
+    for (var l = 0; l < listHashTag.length; l++) {
+      var hashTags = listHashTag[l];
+      for (var j = l + 1; j < listHashTag.length; j++) {
+        if (hashTags === listHashTag[j]) {
           uploadFormHashtags.setCustomValidity('Теги не должны повторяться');
           break;
         }
@@ -184,8 +193,6 @@
 
   // Проверяем поле хеш-тегов
   var onCheckHashTags = function () {
-    var maxHashTags = 5;
-    var maxLengthTag = 20;
     var tagsFieldValue = uploadFormHashtags.value;
     var listHashTag = tagsFieldValue.split(' ');
 
@@ -198,10 +205,10 @@
       } else if (listHashTag[j].indexOf('#', 2) > 0) {
         uploadFormHashtags.setCustomValidity('Хеш-теги должны разделяться пробелом');
         break;
-      } else if (listHashTag[j].length > maxLengthTag) {
+      } else if (listHashTag[j].length > MAX_LENGTH_HASHTAGS) {
         uploadFormHashtags.setCustomValidity('Длина тега не должна превышать 20 символов');
         break;
-      } else if (listHashTag.length > maxHashTags) {
+      } else if (listHashTag.length > MAX_HASHTAGS) {
         uploadFormHashtags.setCustomValidity('Нелья добавить более 5 хеш-тегов');
         break;
       } else if (j === listHashTag.length - 1) {
@@ -211,7 +218,7 @@
   };
 
   // Проверяем поле комментария
-  var onCheckComment = function () {
+  var onInputUploadFormDescr = function () {
     if (uploadFormDescr.validity.tooShort) {
       uploadFormDescr.setCustomValidity('Текст не может быть менее 30 символов');
 
@@ -224,13 +231,17 @@
     }
   };
 
+  var onClickUploadFormSubmit = function () {
+    onCheckHashTags();
+    onCheckValid(uploadFormHashtags);
+    onCheckValid(uploadFormDescr);
+  };
+
   uploadFormDescr.addEventListener('input', function () {
-    onCheckComment();
+    onInputUploadFormDescr();
   });
 
   uploadFormSubmit.addEventListener('click', function () {
-    onCheckHashTags();
-    checkValid(uploadFormHashtags);
-    checkValid(uploadFormDescr);
+    onClickUploadFormSubmit();
   });
 })();
