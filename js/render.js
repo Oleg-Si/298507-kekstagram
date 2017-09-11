@@ -22,7 +22,7 @@
   };
 
   var getValue = function (arr) {
-    var ind = getRandomInt(1, 5);
+    var ind = getRandomInt(1, 25);
     if (arr.indexOf(ind) >= 0) {
       getValue(arr);
     }
@@ -47,7 +47,6 @@
     randomData: function (data) {
       var arr = [];
       for (var i = 0; i < 25; i++) {
-        debugger;
         var totalValue = getValue(arr);
         arr.push(totalValue);
         fragment.appendChild(renderPicture(data[totalValue]));
