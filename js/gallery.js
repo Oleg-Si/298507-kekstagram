@@ -9,31 +9,31 @@
   pictureClosed.setAttribute('tabindex', 0);
 
   // Обработчик нажатия кнопки Esc на галерее
-  var onGalleryEscPress = function (evt) {
+  var onEscPressGallery = function (evt) {
     if (evt.keyCode === ESC_KEYCODE) {
-      hideGallery();
+      onClickPictureClosed();
     }
   };
 
     // Показываем галерею
-  var showGallery = function () {
+  var onClickPictureOpen = function () {
     galleryOverlay.classList.remove('hidden');
-    document.addEventListener('keydown', onGalleryEscPress);
+    document.addEventListener('keydown', onEscPressGallery);
   };
 
   // Скрываем галерею
-  var hideGallery = function () {
+  var onClickPictureClosed = function () {
     galleryOverlay.classList.add('hidden');
-    document.removeEventListener('keydown', onGalleryEscPress);
+    document.removeEventListener('keydown', onEscPressGallery);
   };
 
   // Добавляем обработчик клика мыши
-  pictureClosed.addEventListener('click', hideGallery);
+  pictureClosed.addEventListener('click', onClickPictureClosed);
 
   // Добавляем обработчик клика кнопки
   pictureClosed.addEventListener('keydown', function (evt) {
     if (evt.keyCode === ENTER_KEYCODE) {
-      hideGallery();
+      onClickPictureClosed();
     }
   });
 
@@ -41,19 +41,19 @@
     // Добавляем обработчики клика мыши и кнопки
     addListener: function () {
       var pictureOpen = document.querySelectorAll('.picture');
-      for (var i = 0; i < 25; i++) {
+      for (var i = 0; i < pictureOpen.length; i++) {
         pictureOpen[i].addEventListener('click', function (evt) {
           evt.preventDefault();
           var usedContent = window.preview.getGalleryContent(evt);
           window.preview.showGalleryContent(usedContent);
-          showGallery();
+          onClickPictureOpen();
         });
         pictureOpen[i].addEventListener('keydown', function (evt) {
           if (evt.keyCode === ENTER_KEYCODE) {
             evt.preventDefault();
             var usedContent = window.preview.getGalleryContent(evt);
             window.preview.showGalleryContent(usedContent);
-            showGallery();
+            onClickPictureOpen();
           }
         });
       }

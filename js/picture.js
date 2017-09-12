@@ -1,18 +1,21 @@
 'use strict';
 
 (function () {
-  var allData = [];
+  var START_PIN_POSITION = 20;
+  var START_VAL_POSITION = 20;
 
-  var onSuccess = function (picturesData) {
-    allData = picturesData;
-    window.render.addData(allData);
+  var data = [];
+
+  var onSuccess = function (downloadData) {
+    data = downloadData;
+    window.render.addData(data);
     window.gallery.addListener();
   };
 
   // Сортировка популярные
   var onClickPopular = function () {
     window.render.clearData();
-    window.render.addData(allData.slice().sort(function (first, second) {
+    window.render.addData(data.slice().sort(function (first, second) {
       if (first.likes < second.likes) {
         return 1;
       } else if (first.likes > second.likes) {
@@ -27,14 +30,14 @@
   // Сортировка рекоммендуемые
   var onClickRecommend = function () {
     window.render.clearData();
-    window.render.addData(allData);
+    window.render.addData(data);
     window.gallery.addListener();
   };
 
   // Сортировка обсуждаемые
   var onClickDiscuss = function () {
     window.render.clearData();
-    window.render.addData(allData.slice().sort(function (first, second) {
+    window.render.addData(data.slice().sort(function (first, second) {
       if (first.comments.length < second.comments.length) {
         return 1;
       } else if (first.comments.length > second.comments.length) {
@@ -49,7 +52,7 @@
   // Сортировка случайные
   var onClickRandom = function () {
     window.render.clearData();
-    window.render.randomData(allData.slice());
+    window.render.randomData(data.slice());
     window.gallery.addListener();
   };
 
@@ -94,7 +97,6 @@
     nodeError.style.fontSize = '20px';
     nodeError.style.textAlign = 'center';
     nodeError.style.backgroundColor = 'red';
-
     nodeError.textContent = message;
     document.body.insertAdjacentElement('afterbegin', nodeError);
   };
@@ -118,10 +120,8 @@
     uploadImageScale.className = 'effect-image-preview';
     uploadImageScale.style.filter = 'none';
     uploadImageScale.style.transform = 'scale(1)';
-    var startPinPosition = 20;
-    var startValPosition = 20;
-    uploadEffectLevelPin.style.left = startPinPosition + '%';
-    uploadEffectLevelVal.style.width = startValPosition + '%';
+    uploadEffectLevelPin.style.left = START_PIN_POSITION + '%';
+    uploadEffectLevelVal.style.width = START_VAL_POSITION + '%';
     uploadEffectNone.checked = true;
     uploadEffectLevel.classList.add('hidden');
   };
