@@ -6,15 +6,15 @@
   var fragment = document.createDocumentFragment();
   var filters = document.querySelector('.filters');
   var pictures = document.querySelector('.pictures');
+  var template = document.querySelector('#picture-template').content.querySelector('.picture');
 
   var renderPicture = function (picturesData) {
-    var template = document.querySelector('#picture-template').content.querySelector('.picture');
-
-    template.setAttribute('tabindex', 0);
-    template.children[0].setAttribute('src', picturesData.url);
-    template.querySelector('.picture-likes').textContent = picturesData.likes;
-    template.querySelector('.picture-comments').textContent = picturesData.comments.length;
     var element = template.cloneNode(true);
+
+    element.setAttribute('tabindex', 0);
+    element.children[0].setAttribute('src', picturesData.url);
+    element.querySelector('.picture-likes').textContent = picturesData.likes;
+    element.querySelector('.picture-comments').textContent = picturesData.comments.length;
 
     return element;
   };
@@ -33,10 +33,7 @@
       filters.classList.remove('hidden');
     },
     clearData: function () {
-      var pictureOpen = document.querySelectorAll('.picture');
-      for (var i = 0; i < pictureOpen.length; i++) {
-        pictures.removeChild(pictureOpen[i]);
-      }
+      pictures.innerHTML = '';
     },
     randomData: function (data) {
       for (var i = data.length - 1; i > 0; i--) {

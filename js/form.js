@@ -22,10 +22,12 @@
   var buttonResizeInc = uploadForm.querySelector('.upload-resize-controls-button-inc');
   var buttonResizeDec = uploadForm.querySelector('.upload-resize-controls-button-dec');
   var uploadImageScale = uploadForm.querySelector('.effect-image-preview');
+  var uploadEffectNone = uploadOverlay.querySelector('#upload-effect-none');
   var uploadEffectControls = uploadForm.querySelector('.upload-effect-controls');
   var uploadFormHashtags = uploadForm.querySelector('.upload-form-hashtags');
   var uploadFormSubmit = uploadForm.querySelector('.upload-form-submit');
   var uploadEffectLevel = uploadEffectControls.querySelector('.upload-effect-level');
+  var uploadEffectLine = uploadEffectLevel.querySelector('.upload-effect-level-line');
   var uploadEffectLevelPin = uploadEffectLevel.querySelector('.upload-effect-level-pin');
   var uploadEffectLevelVal = uploadEffectLevel.querySelector('.upload-effect-level-val');
   var uploadFormDescr = uploadForm.querySelector('.upload-form-description');
@@ -38,7 +40,7 @@
   var onEscPressUploadForm = function (evt) {
     if (evt.keyCode === ESC_KEYCODE) {
       if (document.activeElement !== uploadFormDescr) {
-        onKeydownUploadCancel();
+        onClickUploadCancel();
       }
     }
   };
@@ -51,14 +53,7 @@
 
   var onClickUploadCancel = function () {
     uploadOverlay.classList.add('hidden');
-    window.picture();
-    uploadImage.classList.remove('hidden');
-    document.removeEventListener('keydown', onEscPressUploadForm);
-  };
-
-  var onKeydownUploadCancel = function () {
-    uploadOverlay.classList.add('hidden');
-    window.picture();
+    window.form.reset();
     uploadImage.classList.remove('hidden');
     document.removeEventListener('keydown', onEscPressUploadForm);
   };
@@ -68,7 +63,7 @@
   uploadCancel.addEventListener('click', onClickUploadCancel);
   uploadCancel.addEventListener('keydown', function (evt) {
     if (evt.keyCode === ENTER_KEYCODE) {
-      onKeydownUploadCancel();
+      onClickUploadCancel();
     }
   });
 
@@ -89,16 +84,11 @@
     onClickbuttonResize(-1);
   });
 
-  // Изменяем эффект картинки
-  var onClickImageEffect = function (target, element) {
-    window.initializeFilters(target, uploadImageScale);
-  };
-
   // Показываем эффект и насыщенность эффекта
   uploadEffectControls.addEventListener('click', function (evt) {
     var target = evt.target;
     if (target.tagName.toLowerCase() === 'input') {
-      onClickImageEffect(target, uploadImageScale);
+      window.initializeFilters(target, uploadImageScale);
       uploadEffectLevelPin.style.left = START_PIN_POSITION + '%';
       uploadEffectLevelVal.style.width = START_VAL_POSITION + '%';
       // Значение эффектов по умолчанию
@@ -131,19 +121,14 @@
     // Движение мыши
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
-      var shift = startCoords - moveEvt.clientX;
-      startCoords = moveEvt.clientX;
-
-      // Ограничиваем поля движения
-      if (uploadEffectLevelPin.offsetLeft - shift <= MIN_TARGET_WIDTH) {
-        uploadEffectLevelPin.style.left = MIN_TARGET_WIDTH + 'px';
-        uploadEffectLevelVal.style.width = MIN_TARGET_WIDTH + 'px';
-      } else if (uploadEffectLevelPin.offsetLeft - shift >= MAX_TARGET_WIDTH) {
-        uploadEffectLevelPin.style.left = MAX_TARGET_WIDTH + 'px';
-        uploadEffectLevelVal.style.width = MAX_TARGET_WIDTH + 'px';
-      } else {
-        uploadEffectLevelPin.style.left = (uploadEffectLevelPin.offsetLeft - shift) + 'px';
-        uploadEffectLevelVal.style.width = (uploadEffectLevelPin.offsetLeft - shift) + 'px';
+      var uploadEffectLinePosition = uploadEffectLine.getBoundingClientRect();
+      if (moveEvt.clientX <= uploadEffectLinePosition.right && moveEvt.clientX >= uploadEffectLinePosition.left) {
+        var shift = startCoords - moveEvt.clientX;
+        startCoords = moveEvt.clientX;
+        // Для синхронизации значений полосы и пина
+        var totalCoordinats = (uploadEffectLevelPin.offsetLeft - shift) + 'px';
+        uploadEffectLevelPin.style.left = totalCoordinats;
+        uploadEffectLevelVal.style.width = totalCoordinats;
         // Рвссчитываем фильтры
         if (uploadImageScale.classList.contains('effect-marvin')) {
           uploadImageScale.style.filter = 'invert(' + Math.floor((uploadEffectLevelPin.offsetLeft - shift) * 100 / MAX_TARGET_WIDTH) + '%)';
@@ -156,6 +141,14 @@
         } else if (uploadImageScale.classList.contains('effect-heat')) {
           uploadImageScale.style.filter = 'brightness(' + (uploadEffectLevelPin.offsetLeft - shift) * 3 / MAX_TARGET_WIDTH + ')';
         }
+      }
+      // Ограничиваем поля движения
+      if (uploadEffectLevelPin.offsetLeft - shift <= MIN_TARGET_WIDTH) {
+        uploadEffectLevelPin.style.left = MIN_TARGET_WIDTH + 'px';
+        uploadEffectLevelVal.style.width = MIN_TARGET_WIDTH + 'px';
+      } else if (uploadEffectLevelPin.offsetLeft - shift >= MAX_TARGET_WIDTH) {
+        uploadEffectLevelPin.style.left = MAX_TARGET_WIDTH + 'px';
+        uploadEffectLevelVal.style.width = MAX_TARGET_WIDTH + 'px';
       }
     };
 
@@ -179,40 +172,47 @@
   };
 
   // Проверяем повторяющиеся теги
-  var checkDoubleHashTags = function (listHashTag) {
-    for (var l = 0; l < listHashTag.length; l++) {
-      var hashTags = listHashTag[l];
-      for (var j = l + 1; j < listHashTag.length; j++) {
-        if (hashTags === listHashTag[j]) {
-          uploadFormHashtags.setCustomValidity('Теги не должны повторяться');
-          break;
+  var checkDoubleHashTags = function (hashtags) {
+    for (var l = 0; l < hashtags.length; l++) {
+      var hashtag = hashtags[l];
+      for (var j = l + 1; j < hashtags.length; j++) {
+        if (hashtag === hashtags[j]) {
+          return 1;
         }
       }
     }
+    return 0;
   };
 
   // Проверяем поле хеш-тегов
   var onCheckHashTags = function () {
-    var tagsFieldValue = uploadFormHashtags.value;
-    var listHashTag = tagsFieldValue.split(' ');
+    var tagsFieldValue = uploadFormHashtags.value.trim();
+    uploadFormHashtags.value = tagsFieldValue;
+    var hashtags = tagsFieldValue.split(' ');
 
     uploadFormHashtags.setCustomValidity('');
 
-    for (var j = 0; j < listHashTag.length; j++) {
-      if (listHashTag[j].charAt(0) !== '#') {
+    if (tagsFieldValue === '') {
+      // uploadFormHashtags.style.border = 'none';
+      return;
+    } else if (hashtags.length > MAX_HASHTAGS) {
+      uploadFormHashtags.setCustomValidity('Нелья добавить более 5 хеш-тегов');
+      return;
+    } else if (checkDoubleHashTags(hashtags)) {
+      uploadFormHashtags.setCustomValidity('Теги не должны повторяться');
+      return;
+    }
+
+    for (var j = 0; j < hashtags.length; j++) {
+      if (hashtags[j].charAt(0) !== '#') {
         uploadFormHashtags.setCustomValidity('Первый символ должен быть решеткой');
         break;
-      } else if (listHashTag[j].indexOf('#', 2) > 0) {
+      } else if (hashtags[j].indexOf('#', 2) > 0) {
         uploadFormHashtags.setCustomValidity('Хеш-теги должны разделяться пробелом');
         break;
-      } else if (listHashTag[j].length > MAX_LENGTH_HASHTAGS) {
+      } else if (hashtags[j].length > MAX_LENGTH_HASHTAGS) {
         uploadFormHashtags.setCustomValidity('Длина тега не должна превышать 20 символов');
         break;
-      } else if (listHashTag.length > MAX_HASHTAGS) {
-        uploadFormHashtags.setCustomValidity('Нелья добавить более 5 хеш-тегов');
-        break;
-      } else if (j === listHashTag.length - 1) {
-        checkDoubleHashTags(listHashTag);
       }
     }
   };
@@ -244,4 +244,20 @@
   uploadFormSubmit.addEventListener('click', function () {
     onClickUploadFormSubmit();
   });
+
+  // Сбрасываем данные формы
+  window.form = {
+    reset: function () {
+      uploadFormHashtags.value = '';
+      uploadFormDescr.value = '';
+      resizeControlsLabel.setAttribute('value', '100%');
+      uploadImageScale.className = 'effect-image-preview';
+      uploadImageScale.style.filter = 'none';
+      uploadImageScale.style.transform = 'scale(1)';
+      uploadEffectLevelPin.style.left = START_PIN_POSITION + '%';
+      uploadEffectLevelVal.style.width = START_VAL_POSITION + '%';
+      uploadEffectNone.checked = true;
+      uploadEffectLevel.classList.add('hidden');
+    }
+  };
 })();

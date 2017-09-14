@@ -11,7 +11,8 @@
       if (xhr.status === 200) {
         onLoad(xhr.response);
       } else {
-        onError('Ошибка, код: ' + xhr.status);
+        // Если отправлять не картинку сервер вернет 404, убедитесь что вы отправляете картинку!
+        onError('Ошибка, код: ' + xhr.status + ' ВЫ ТОЧНО ОТПРАВЛЯЕТЕ КАРТИНКУ???!!!!');
       }
     });
     xhr.addEventListener('error', function () {
@@ -21,7 +22,7 @@
       onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
     });
 
-    xhr.timeout = 5000;
+    xhr.timeout = 30000;
 
     return xhr;
   };

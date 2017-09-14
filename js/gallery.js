@@ -16,7 +16,10 @@
   };
 
     // Показываем галерею
-  var onClickPictureOpen = function () {
+  var onClickPictureOpen = function (evt) {
+    evt.preventDefault();
+    var usedContent = window.preview.getGalleryContent(evt);
+    window.preview.showGalleryContent(usedContent);
     galleryOverlay.classList.remove('hidden');
     document.addEventListener('keydown', onEscPressGallery);
   };
@@ -43,17 +46,11 @@
       var pictureOpen = document.querySelectorAll('.picture');
       for (var i = 0; i < pictureOpen.length; i++) {
         pictureOpen[i].addEventListener('click', function (evt) {
-          evt.preventDefault();
-          var usedContent = window.preview.getGalleryContent(evt);
-          window.preview.showGalleryContent(usedContent);
-          onClickPictureOpen();
+          onClickPictureOpen(evt);
         });
         pictureOpen[i].addEventListener('keydown', function (evt) {
           if (evt.keyCode === ENTER_KEYCODE) {
-            evt.preventDefault();
-            var usedContent = window.preview.getGalleryContent(evt);
-            window.preview.showGalleryContent(usedContent);
-            onClickPictureOpen();
+            onClickPictureOpen(evt);
           }
         });
       }
