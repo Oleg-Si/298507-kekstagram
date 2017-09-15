@@ -143,7 +143,13 @@
         }
       }
       // Ограничиваем поля движения
-      if (uploadEffectLevelPin.offsetLeft - shift <= MIN_TARGET_WIDTH) {
+      if (moveEvt.clientX <= uploadEffectLinePosition.left) {
+        uploadEffectLevelPin.style.left = MIN_TARGET_WIDTH + 'px';
+        uploadEffectLevelVal.style.width = MIN_TARGET_WIDTH + 'px';
+      } else if (moveEvt.clientX >= uploadEffectLinePosition.right) {
+        uploadEffectLevelPin.style.left = MAX_TARGET_WIDTH + 'px';
+        uploadEffectLevelVal.style.width = MAX_TARGET_WIDTH + 'px';
+      } else if (uploadEffectLevelPin.offsetLeft - shift <= MIN_TARGET_WIDTH) {
         uploadEffectLevelPin.style.left = MIN_TARGET_WIDTH + 'px';
         uploadEffectLevelVal.style.width = MIN_TARGET_WIDTH + 'px';
       } else if (uploadEffectLevelPin.offsetLeft - shift >= MAX_TARGET_WIDTH) {
@@ -193,7 +199,6 @@
     uploadFormHashtags.setCustomValidity('');
 
     if (tagsFieldValue === '') {
-      // uploadFormHashtags.style.border = 'none';
       return;
     } else if (hashtags.length > MAX_HASHTAGS) {
       uploadFormHashtags.setCustomValidity('Нелья добавить более 5 хеш-тегов');
