@@ -226,10 +226,8 @@
   var onInputUploadFormDescr = function () {
     if (uploadFormDescr.validity.tooShort) {
       uploadFormDescr.setCustomValidity('Текст не может быть менее 30 символов');
-
-      if (uploadFormDescr.validity.tooLong) {
-        uploadFormDescr.setCustomValidity('Текст не может быть более 100 символов');
-      }
+    } else if (uploadFormDescr.validity.tooLong) {
+      uploadFormDescr.setCustomValidity('Текст не может быть более 100 символов');
     } else {
       uploadFormDescr.setCustomValidity('');
       uploadFormDescr.style.border = 'none';
