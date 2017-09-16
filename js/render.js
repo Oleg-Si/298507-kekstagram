@@ -22,8 +22,8 @@
   };
 
   window.render = {
-    addData: function (data) {
-      data.forEach(function (element) {
+    addData: function (photos) {
+      photos.forEach(function (element) {
         fragment.appendChild(renderPicture(element));
       });
       pictures.appendChild(fragment);
@@ -32,10 +32,10 @@
     clearData: function () {
       pictures.innerHTML = '';
     },
-    randomData: function (data) {
-      for (var i = data.length; i > 0; i--) {
+    randomData: function (photos) {
+      for (var i = photos.length; i > 0; i--) {
         var ind = getRandomInt(0, i);
-        var element = data.splice(ind, 1);
+        var element = photos.splice(ind, 1);
         fragment.appendChild(renderPicture(element[0]));
       }
       pictures.appendChild(fragment);

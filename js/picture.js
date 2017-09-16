@@ -72,6 +72,7 @@
   });
 
   var uploadForm = document.querySelector('#upload-select-image');
+  var uploadFile = uploadForm.querySelector('#upload-file');
   var uploadOverlay = uploadForm.querySelector('.upload-overlay');
   var uploadImage = uploadForm.querySelector('.upload-image');
 
@@ -98,6 +99,7 @@
       uploadImage.classList.remove('hidden');
       window.form.reset();
     }, onError);
+    uploadFile.value = '';
   });
 
 
