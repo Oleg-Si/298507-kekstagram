@@ -44,16 +44,16 @@
     // Добавляем обработчики клика мыши и кнопки
     addListener: function () {
       var pictureOpen = document.querySelectorAll('.picture');
-      for (var i = 0; i < pictureOpen.length; i++) {
-        pictureOpen[i].addEventListener('click', function (evt) {
+      pictureOpen.forEach(function (element) {
+        element.addEventListener('click', function (evt) {
           onClickPictureOpen(evt);
         });
-        pictureOpen[i].addEventListener('keydown', function (evt) {
+        element.addEventListener('keydown', function (evt) {
           if (evt.keyCode === ENTER_KEYCODE) {
             onClickPictureOpen(evt);
           }
         });
-      }
+      });
     }
   };
 })();

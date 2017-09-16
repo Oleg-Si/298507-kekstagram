@@ -1,8 +1,6 @@
 'use strict';
 
 (function () {
-  var ARRAY_LENGTH = 25;
-
   var fragment = document.createDocumentFragment();
   var filters = document.querySelector('.filters');
   var pictures = document.querySelector('.pictures');
@@ -25,18 +23,17 @@
 
   window.render = {
     addData: function (data) {
-      for (var i = 0; i < ARRAY_LENGTH; i++) {
-        fragment.appendChild(renderPicture(data[i]));
-      }
+      data.forEach(function (element) {
+        fragment.appendChild(renderPicture(element));
+      });
       pictures.appendChild(fragment);
-
       filters.classList.remove('hidden');
     },
     clearData: function () {
       pictures.innerHTML = '';
     },
     randomData: function (data) {
-      for (var i = data.length - 1; i > 0; i--) {
+      for (var i = data.length; i > 0; i--) {
         var ind = getRandomInt(0, i);
         var element = data.splice(ind, 1);
         fragment.appendChild(renderPicture(element[0]));
