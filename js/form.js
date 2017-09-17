@@ -183,11 +183,11 @@
       var hashtag = hashtags[l];
       for (var j = l + 1; j < hashtags.length; j++) {
         if (hashtag === hashtags[j]) {
-          return 1;
+          return true;
         }
       }
     }
-    return 0;
+    return false;
   };
 
   // Проверяем поле хеш-тегов
