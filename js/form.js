@@ -54,6 +54,7 @@
   var onClickUploadCancel = function () {
     uploadOverlay.classList.add('hidden');
     window.form.reset();
+    uploadFile.value = '';
     uploadImage.classList.remove('hidden');
     document.removeEventListener('keydown', onEscPressUploadForm);
   };
