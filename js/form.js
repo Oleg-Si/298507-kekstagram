@@ -13,24 +13,20 @@
   var START_PIN_POSITION = 20;
   var START_VAL_POSITION = 20;
 
-  var uploadForm = document.querySelector('#upload-select-image');
-  var uploadFile = uploadForm.querySelector('#upload-file');
-  var uploadOverlay = uploadForm.querySelector('.upload-overlay');
-  var uploadImage = uploadForm.querySelector('.upload-image');
-  var uploadCancel = uploadForm.querySelector('.upload-form-cancel');
-  var resizeControlsLabel = uploadForm.querySelector('.upload-resize-controls-value');
-  var buttonResizeInc = uploadForm.querySelector('.upload-resize-controls-button-inc');
-  var buttonResizeDec = uploadForm.querySelector('.upload-resize-controls-button-dec');
-  var uploadImageScale = uploadForm.querySelector('.effect-image-preview');
-  var uploadEffectNone = uploadOverlay.querySelector('#upload-effect-none');
-  var uploadEffectControls = uploadForm.querySelector('.upload-effect-controls');
-  var uploadFormHashtags = uploadForm.querySelector('.upload-form-hashtags');
-  var uploadFormSubmit = uploadForm.querySelector('.upload-form-submit');
+  var uploadCancel = document.querySelector('.upload-form-cancel');
+  var resizeControlsLabel = document.querySelector('.upload-resize-controls-value');
+  var buttonResizeInc = document.querySelector('.upload-resize-controls-button-inc');
+  var buttonResizeDec = document.querySelector('.upload-resize-controls-button-dec');
+  var uploadImageScale = document.querySelector('.effect-image-preview');
+  var uploadEffectNone = document.querySelector('#upload-effect-none');
+  var uploadEffectControls = document.querySelector('.upload-effect-controls');
+  var uploadFormHashtags = document.querySelector('.upload-form-hashtags');
+  var uploadFormSubmit = document.querySelector('.upload-form-submit');
   var uploadEffectLevel = uploadEffectControls.querySelector('.upload-effect-level');
   var uploadEffectLine = uploadEffectLevel.querySelector('.upload-effect-level-line');
   var uploadEffectLevelPin = uploadEffectLevel.querySelector('.upload-effect-level-pin');
   var uploadEffectLevelVal = uploadEffectLevel.querySelector('.upload-effect-level-val');
-  var uploadFormDescr = uploadForm.querySelector('.upload-form-description');
+  var uploadFormDescr = document.querySelector('.upload-form-description');
   uploadFormDescr.setAttribute('tabindex', 0);
 
   // Скрываем поле эффектов
@@ -46,20 +42,20 @@
   };
 
   var onChangeUploadForm = function () {
-    uploadOverlay.classList.remove('hidden');
-    uploadImage.classList.add('hidden');
+    window.form.uploadOverlay.classList.remove('hidden');
+    window.form.uploadImage.classList.add('hidden');
     document.addEventListener('keydown', onEscPressUploadForm);
   };
 
   var onClickUploadCancel = function () {
-    uploadOverlay.classList.add('hidden');
+    window.form.uploadOverlay.classList.add('hidden');
     window.form.reset();
-    uploadFile.value = '';
-    uploadImage.classList.remove('hidden');
+    window.form.uploadFile.value = '';
+    window.form.uploadImage.classList.remove('hidden');
     document.removeEventListener('keydown', onEscPressUploadForm);
   };
 
-  uploadFile.addEventListener('change', onChangeUploadForm);
+  window.form.uploadFile.addEventListener('change', onChangeUploadForm);
 
   uploadCancel.addEventListener('click', onClickUploadCancel);
   uploadCancel.addEventListener('keydown', function (evt) {
@@ -170,7 +166,7 @@
   });
 
   // Если форма не валидна, подсвечиваем поля
-  var onCheckValid = function (fieldName) {
+  var checkValid = function (fieldName) {
     if (!fieldName.validity.valid) {
       fieldName.style.border = '3px solid red';
     } else {
@@ -192,7 +188,7 @@
   };
 
   // Проверяем поле хеш-тегов
-  var onCheckHashTags = function () {
+  var checkHashTags = function () {
     var tagsFieldValue = uploadFormHashtags.value.trim();
     uploadFormHashtags.value = tagsFieldValue;
     var hashtags = tagsFieldValue.split(' ');
@@ -236,9 +232,9 @@
   };
 
   var onClickUploadFormSubmit = function () {
-    onCheckHashTags();
-    onCheckValid(uploadFormHashtags);
-    onCheckValid(uploadFormDescr);
+    checkHashTags();
+    checkValid(uploadFormHashtags);
+    checkValid(uploadFormDescr);
   };
 
   uploadFormDescr.addEventListener('input', function () {
@@ -262,6 +258,10 @@
       uploadEffectLevelVal.style.width = START_VAL_POSITION + '%';
       uploadEffectNone.checked = true;
       uploadEffectLevel.classList.add('hidden');
-    }
+    },
+    uploadForm: document.querySelector('#upload-select-image'),
+    uploadFile: document.querySelector('#upload-file'),
+    uploadOverlay: document.querySelector('.upload-overlay'),
+    uploadImage: document.querySelector('.upload-image')
   };
 })();

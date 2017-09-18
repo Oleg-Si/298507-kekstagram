@@ -39,6 +39,6 @@
         fragment.appendChild(renderPicture(element[0]));
       }
       pictures.appendChild(fragment);
-    }
+    },
   };
 })();

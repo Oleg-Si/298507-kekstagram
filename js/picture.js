@@ -71,11 +71,6 @@
     window.debounce(onClickRandom);
   });
 
-  var uploadForm = document.querySelector('#upload-select-image');
-  var uploadFile = uploadForm.querySelector('#upload-file');
-  var uploadOverlay = uploadForm.querySelector('.upload-overlay');
-  var uploadImage = uploadForm.querySelector('.upload-image');
-
   // Блок ошибки
   var onError = function (message) {
     var nodeError = document.createElement('div');
@@ -92,15 +87,13 @@
 
   window.backend.load(onSuccess, onError);
 
-  uploadForm.addEventListener('submit', function (evt) {
+  window.form.uploadForm.addEventListener('submit', function (evt) {
     evt.preventDefault();
-    window.backend.save(new FormData(uploadForm), function () {
-      uploadOverlay.classList.add('hidden');
-      uploadImage.classList.remove('hidden');
+    window.backend.save(new FormData(window.form.uploadForm), function () {
+      window.form.uploadOverlay.classList.add('hidden');
+      window.form.uploadImage.classList.remove('hidden');
       window.form.reset();
     }, onError);
-    uploadFile.value = '';
+    window.form.uploadFile.value = '';
   });
-
-
 })();

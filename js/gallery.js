@@ -4,8 +4,7 @@
   var ESC_KEYCODE = 27;
   var ENTER_KEYCODE = 13;
 
-  var galleryOverlay = document.querySelector('.gallery-overlay');
-  var pictureClosed = galleryOverlay.querySelector('.gallery-overlay-close');
+  var pictureClosed = document.querySelector('.gallery-overlay-close');
   pictureClosed.setAttribute('tabindex', 0);
 
   // Обработчик нажатия кнопки Esc на галерее
@@ -20,13 +19,13 @@
     evt.preventDefault();
     var usedContent = window.preview.getGalleryContent(evt);
     window.preview.showGalleryContent(usedContent);
-    galleryOverlay.classList.remove('hidden');
+    window.gallery.galleryOverlay.classList.remove('hidden');
     document.addEventListener('keydown', onEscPressGallery);
   };
 
   // Скрываем галерею
   var onClickPictureClosed = function () {
-    galleryOverlay.classList.add('hidden');
+    window.gallery.galleryOverlay.classList.add('hidden');
     document.removeEventListener('keydown', onEscPressGallery);
   };
 
@@ -54,6 +53,7 @@
           }
         });
       });
-    }
+    },
+    galleryOverlay: document.querySelector('.gallery-overlay')
   };
 })();
