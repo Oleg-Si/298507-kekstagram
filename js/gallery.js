@@ -19,13 +19,13 @@
     evt.preventDefault();
     var usedContent = window.preview.getGalleryContent(evt);
     window.preview.showGalleryContent(usedContent);
-    window.gallery.galleryOverlay.classList.remove('hidden');
+    window.gallery.overlay.classList.remove('hidden');
     document.addEventListener('keydown', onEscPressGallery);
   };
 
   // Скрываем галерею
   var onClickPictureClosed = function () {
-    window.gallery.galleryOverlay.classList.add('hidden');
+    window.gallery.overlay.classList.add('hidden');
     document.removeEventListener('keydown', onEscPressGallery);
   };
 
@@ -54,6 +54,6 @@
         });
       });
     },
-    galleryOverlay: document.querySelector('.gallery-overlay')
+    overlay: document.querySelector('.gallery-overlay')
   };
 })();

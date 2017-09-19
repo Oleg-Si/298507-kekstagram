@@ -15,9 +15,9 @@
 
     // Наполняем галерею данными
     showGalleryContent: function (usedContent) {
-      window.gallery.galleryOverlay.querySelector('.gallery-overlay-image').setAttribute('src', usedContent.url);
-      window.gallery.galleryOverlay.querySelector('.likes-count').textContent = usedContent.likes;
-      window.gallery.galleryOverlay.querySelector('.comments-count').textContent = usedContent.comments;
+      window.gallery.overlay.querySelector('.gallery-overlay-image').setAttribute('src', usedContent.url);
+      window.gallery.overlay.querySelector('.likes-count').textContent = usedContent.likes;
+      window.gallery.overlay.querySelector('.comments-count').textContent = usedContent.comments;
     }
   };
 })();
