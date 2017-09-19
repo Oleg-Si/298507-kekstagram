@@ -87,9 +87,9 @@
 
   window.backend.load(onSuccess, onError);
 
-  window.form.uploadForm.addEventListener('submit', function (evt) {
+  window.form.upload.addEventListener('submit', function (evt) {
     evt.preventDefault();
-    window.backend.save(new FormData(window.form.uploadForm), function () {
+    window.backend.save(new FormData(window.form.upload), function () {
       window.form.uploadOverlay.classList.add('hidden');
       window.form.uploadImage.classList.remove('hidden');
       window.form.reset();

@@ -13,26 +13,6 @@
   var START_PIN_POSITION = 20;
   var START_VAL_POSITION = 20;
 
-  // Сбрасываем данные формы
-  window.form = {
-    reset: function () {
-      uploadFormHashtags.value = '';
-      uploadFormDescr.value = '';
-      resizeControlsLabel.setAttribute('value', '100%');
-      uploadImageScale.className = 'effect-image-preview';
-      uploadImageScale.style.filter = 'none';
-      uploadImageScale.style.transform = 'scale(1)';
-      uploadEffectLevelPin.style.left = START_PIN_POSITION + '%';
-      uploadEffectLevelVal.style.width = START_VAL_POSITION + '%';
-      uploadEffectNone.checked = true;
-      uploadEffectLevel.classList.add('hidden');
-    },
-    uploadForm: document.querySelector('#upload-select-image'),
-    uploadFile: document.querySelector('#upload-file'),
-    uploadOverlay: document.querySelector('.upload-overlay'),
-    uploadImage: document.querySelector('.upload-image')
-  };
-
   var uploadCancel = document.querySelector('.upload-form-cancel');
   var resizeControlsLabel = document.querySelector('.upload-resize-controls-value');
   var buttonResizeInc = document.querySelector('.upload-resize-controls-button-inc');
@@ -74,8 +54,6 @@
     window.form.uploadImage.classList.remove('hidden');
     document.removeEventListener('keydown', onEscPressUploadForm);
   };
-
-  window.form.uploadFile.addEventListener('change', onChangeUploadForm);
 
   uploadCancel.addEventListener('click', onClickUploadCancel);
   uploadCancel.addEventListener('keydown', function (evt) {
@@ -264,4 +242,26 @@
   uploadFormSubmit.addEventListener('click', function () {
     onClickUploadFormSubmit();
   });
+
+  // Сбрасываем данные формы
+  window.form = {
+    reset: function () {
+      uploadFormHashtags.value = '';
+      uploadFormDescr.value = '';
+      resizeControlsLabel.setAttribute('value', '100%');
+      uploadImageScale.className = 'effect-image-preview';
+      uploadImageScale.style.filter = 'none';
+      uploadImageScale.style.transform = 'scale(1)';
+      uploadEffectLevelPin.style.left = START_PIN_POSITION + '%';
+      uploadEffectLevelVal.style.width = START_VAL_POSITION + '%';
+      uploadEffectNone.checked = true;
+      uploadEffectLevel.classList.add('hidden');
+    },
+    upload: document.querySelector('#upload-select-image'),
+    uploadFile: document.querySelector('#upload-file'),
+    uploadOverlay: document.querySelector('.upload-overlay'),
+    uploadImage: document.querySelector('.upload-image')
+  };
+
+  window.form.uploadFile.addEventListener('change', onChangeUploadForm);
 })();
